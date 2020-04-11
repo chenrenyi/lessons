@@ -49,7 +49,7 @@
 11、输出字符串 "I'm great"
 
 ## 答案
-```
+```bash
 # 1
 mkdir pratice
 cd pratice

@@ -26,7 +26,7 @@ i
 
 ## 练习作业
 新建 sort.py，输入以下代码：
-```
+```python
 def bubble_sorted(iterable):
     new_list = list(iterable)
     list_len = len(new_list)
