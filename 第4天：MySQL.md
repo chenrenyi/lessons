@@ -41,12 +41,17 @@ UPDATE
 DELETE
 ```
 
+### 参考文档
+百度 谷歌 MySQL教程，比如得到结果：
+
+[https://www.runoob.com/mysql/mysql-tutorial.html]()
+
 ## 练习
 ### 登录进MySQL
 登录
 
 ### 创建数据库
-取名为 qerdb
+创建一个数据库并取名为 qerdb
 > 一个MySQL服务，可以有多个数据库（database）
 > 
 > 一个数据库(database)下面，可以有多个表(table)
@@ -110,10 +115,49 @@ blog表，内容如下：
 尝试一次插入一条，与一次插入多条数据
 
 ### 查询数据
+1、查询总的博客数量
 
-### 创建索引
+2、查询并显示如下信息：博客标题、作者姓名
+
+3、查询出所有人的年龄和
+
+4、查询出用户中最大的年龄
+
+5、查询出年龄第二大和第三大的两个用户
+
+6、按年龄顺序从小到大显示所有用户
+
+7、查询出没写过任何博客的用户数量
+
+8、查询出写过博客的用户数量
+
+9、查询并显示如下信息：人名，博客数量
+
+10、按写的博客数量大到小显示人名
+
+### 修改数据
+
+1、把所有人的年龄加1
+
+2、删掉用户 cat
+
+3、把年龄小于20的的人的年龄减1
+
+4、把姓名中含有字母o的人的年龄加1
+
+### DDL
+1、给blog表的user_id字段添加索引（顺便了解下唯一索引）
+
+2、查看blog表的表结构、表创建语句有什么变化
+
+3、给blog表，添加一个字段content
+
+4、将 blog 表字段 id 的类型，修改为 bigint
 
 ### 导入与导出数据
+1、导出 user 表的全部数据
+
+2、新建一张与user一样的表，取名为user_back，并导入刚刚导出的数据
 
 ## 答案
 ```MySQL
@@ -168,3 +212,72 @@ VALUES
     (5,5,'ok'),
     (6,3,'nice');
 ```
+
+```MySQL
+# 查询数据
+# 1
+select count(*) from blog;
+
+# 2
+select blog.title, user.name from blog, user where blog.user_id = user.id;
+
+# 3
+select sum(age) from user;
+
+# 4
+select max(age) from user;
+
+# 5
+select * from user order by age desc limit 1, 2;
+
+# 6
+select * from user order by age;
+
+# 7
+select count(*) from user where not exists(select 1 from blog where blog.user_id = user.id);
+select count(*) from user left join blog on user.id = blog.user_id where blog.id is null;
+
+# 8
+select count(*) from user where exists(select 1 from blog where blog.user_id = user.id);
+select count(*) from user left join blog on user.id = blog.user_id where blog.id is not null;
+select count(distinct(user_id)) from blog;
+
+# 9
+select user.name, count(1) from user, blog where user.id = blog.user_id group by blog.user_id;
+
+# 10
+select user.name, count(1) as blog_count from user, blog where user.id = blog.user_id group by blog.user_id order by blog_count desc;
+select name from user where id in (select user_id from blog group by user_id order by count(*) );
+```
+
+```MySQL
+# 修改数据
+update user set age = age + 1;
+
+delete from user where name = "cat"
+
+update user set age = age - 1 where age < 20;
+
+update user set age = age + 1 where name like '%o%';
+```
+
+```MySQL
+# 创建索引
+ALTER TABLE `blog` ADD INDEX (`user_id`);
+DESC blog;
+show create table blog;
+
+# 添加字段
+ALTER TABLE `blog` ADD `content` VARCHAR(1024)  NOT NULL  DEFAULT ''  COMMENT '内容'  AFTER `title`;
+
+# 修改字段类型
+ALTER TABLE `blog` CHANGE `id` `id` BIGINT(11)  UNSIGNED  NOT NULL  AUTO_INCREMENT;
+```
+
+```MySQL
+# 导入与导出
+mysqldump 命令
+
+source 命令
+```
+
